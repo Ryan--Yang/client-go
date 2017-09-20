@@ -19,9 +19,9 @@ package main
 
 import (
 	"fmt"
-	"time"
+	_ "time"
 
-	"k8s.io/apimachinery/pkg/api/errors"
+	_ "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -38,11 +38,11 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	dep, err := clientset.AppsV1beta1().Deployments().List(metav1.ListOptions{})
+	deps, err := clientset.AppsV1beta1().Deployments("").List(metav1.ListOptions{})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+	fmt.Printf("There are %d deps in the cluster\n", len(deps.Items))
 	pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{})
 	if err != nil {
 		panic(err.Error())
@@ -50,10 +50,9 @@ func main() {
 	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
 
 	for _, pod := range pods.Items {
-		err = podInterface.Delete(pod.Name, &kapi.DeleteOptions{})
 		fmt.Println("pod name: %s ", pod.Name)
 		if err != nil {
-			log.Printf("Error: %s", err)
+			fmt.Printf("Error: %s\n", err)
 		}
 	}
 
