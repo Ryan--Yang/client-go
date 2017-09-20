@@ -38,11 +38,24 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+	services, err := clientset.CoreV1().Services("").List(metav1.ListOptions{})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("There are %d services in the cluster\n", len(services.Items))
+	for _, service := range services.Items {
+		fmt.Println("services name: %s ", service.Name)
+	}
+
 	deps, err := clientset.AppsV1beta1().Deployments("").List(metav1.ListOptions{})
 	if err != nil {
 		panic(err.Error())
 	}
 	fmt.Printf("There are %d deps in the cluster\n", len(deps.Items))
+	for _, dep := range deps.Items {
+		fmt.Println("deployment name : %s ", dep.Name)
+	}
+
 	pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{})
 	if err != nil {
 		panic(err.Error())
@@ -51,9 +64,6 @@ func main() {
 
 	for _, pod := range pods.Items {
 		fmt.Println("pod name: %s ", pod.Name)
-		if err != nil {
-			fmt.Printf("Error: %s\n", err)
-		}
 	}
 
 }
