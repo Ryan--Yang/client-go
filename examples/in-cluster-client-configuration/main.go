@@ -38,6 +38,16 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+	// 获取namespace
+	namespaces, err := clientset.Core().Namespaces().List(metav1.ListOptions{})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("There are %d namespaces in the cluster\n", len(namespaces.Items))
+	for _, namespace := range namespaces.Items {
+		fmt.Println("namespaces name: %s ", namespace.Name)
+	}
+
 	services, err := clientset.CoreV1().Services("").List(metav1.ListOptions{})
 	if err != nil {
 		panic(err.Error())
